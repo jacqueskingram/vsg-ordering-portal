@@ -1,7 +1,7 @@
 'use server';
 
 import {mutate} from '@/platform/vendure/api';
-import {SetOrderShippingAddressMutation, SetOrderBillingAddressMutation, SetOrderShippingMethodMutation, AddPaymentToOrderMutation, TransitionOrderToStateMutation, SetCustomerForOrderMutation} from '@/features/checkout/graphql';
+import {SetOrderShippingAddressMutation, SetOrderBillingAddressMutation, SetOrderShippingMethodMutation, AddPaymentToOrderMutation, TransitionOrderToStateMutation, SetCustomerForOrderMutation, SetOrderCustomFieldsMutation} from '@/features/checkout/graphql';
 import {CreateCustomerAddressMutation} from '@/features/account/graphql';
 import {revalidatePath, updateTag} from 'next/cache';
 import {redirect} from '@/platform/i18n/navigation';
@@ -74,6 +74,36 @@ export async function createCustomerAddress(address: AddressInput) {
     const locale = await getLocale();
     revalidatePath(`/${locale}/checkout`);
     return result.data.createCustomerAddress;
+}
+
+interface PurchaseOrderDetails {
+    purchaseOrderNumber: string;
+    customerNotes?: string;
+}
+
+export async function setPurchaseOrderDetails(details: PurchaseOrderDetails) {
+    const result = await mutate(
+        SetOrderCustomFieldsMutation,
+        {
+            input: {
+                customFields: {
+                    purchaseOrderNumber: details.purchaseOrderNumber,
+                    customerNotes: details.customerNotes || null,
+                },
+            },
+        },
+        {useAuthToken: true}
+    );
+
+    if (result.data.setOrderCustomFields.__typename !== 'Order') {
+        const errorResult = result.data.setOrderCustomFields;
+        throw new Error(
+            `Failed to set purchase order details: ${errorResult.errorCode} - ${errorResult.message}`
+        );
+    }
+
+    const locale = await getLocale();
+    revalidatePath(`/${locale}/checkout`);
 }
 
 export async function transitionToArrangingPayment() {

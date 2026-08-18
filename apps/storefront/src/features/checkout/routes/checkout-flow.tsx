@@ -244,7 +244,7 @@ export default function CheckoutFlow() {
                 }`}>
                   {completedSteps.has('payment') ? '✓' : getStepNumber('payment')}
                 </div>
-                <span className="text-lg font-semibold">{t('paymentMethod')}</span>
+                <span className="text-lg font-semibold">{t('purchaseOrderDetails')}</span>
               </div>
             </AccordionTrigger>
             <AccordionContent className="pt-4">

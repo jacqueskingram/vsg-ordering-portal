@@ -14,8 +14,8 @@ import {
 import {ArrowRightIcon} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {Price} from '@/features/pricing/price';
-import {OrderStatusBadge} from '@/features/orders/order-status-badge';
 import {formatDate} from '@/platform/i18n/format';
+import {poFields} from '@/platform/vendure/order-custom-fields';
 import { Link, redirect } from '@/platform/i18n/navigation';
 import {getRouteLocale} from '@/platform/i18n/server';
 import {getTranslations} from 'next-intl/server';
@@ -82,7 +82,11 @@ export default async function OrdersPage(props: PageProps<'/[locale]/account/ord
                             >
                                 <div className="flex items-center justify-between mb-3">
                                     <span className="font-semibold">#{order.code}</span>
-                                    <OrderStatusBadge state={order.state}/>
+                                    {poFields(order.customFields)?.purchaseOrderNumber && (
+                                        <span className="text-xs text-muted-foreground">
+                                            {t('poNumber')}: {poFields(order.customFields)?.purchaseOrderNumber}
+                                        </span>
+                                    )}
                                 </div>
                                 <div className="flex items-center justify-between text-sm">
                                     <span className="text-muted-foreground">{formatDate(order.createdAt, 'short', locale)}</span>
@@ -107,7 +111,7 @@ export default async function OrdersPage(props: PageProps<'/[locale]/account/ord
                                 <TableRow>
                                     <TableHead>{t('orderNumber')}</TableHead>
                                     <TableHead>{t('date')}</TableHead>
-                                    <TableHead>{t('status')}</TableHead>
+                                    <TableHead>{t('poNumber')}</TableHead>
                                     <TableHead>{t('itemsHeader')}</TableHead>
                                     <TableHead className="text-right">{t('totalHeader')}</TableHead>
                                 </TableRow>
@@ -123,8 +127,8 @@ export default async function OrdersPage(props: PageProps<'/[locale]/account/ord
                                         <TableCell>
                                             {formatDate(order.createdAt, 'short', locale)}
                                         </TableCell>
-                                        <TableCell>
-                                            <OrderStatusBadge state={order.state}/>
+                                        <TableCell className="text-muted-foreground">
+                                            {poFields(order.customFields)?.purchaseOrderNumber || '—'}
                                         </TableCell>
                                         <TableCell>
                                             {order.lines.length}{' '}

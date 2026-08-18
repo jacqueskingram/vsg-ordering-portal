@@ -12,13 +12,15 @@
   },
   "OrderConfirmation": {
     "pageTitle": "Bestellbestätigung",
-    "orderConfirmed": "Bestellung bestätigt!",
-    "thankYou": "Vielen Dank für Ihre Bestellung. Ihre Bestellnummer lautet",
-    "emailConfirmation": "Wir senden Ihnen eine E-Mail mit Ihren Bestelldetails und Tracking-Informationen.",
+    "orderConfirmed": "Bestellung eingereicht!",
+    "thankYou": "Vielen Dank. Ihre VSG-Bestellnummer lautet",
+    "emailConfirmation": "Sie können diese Bestellung jederzeit in Ihrem Bestellverlauf einsehen.",
     "orderSummary": "Bestellübersicht",
     "qty": "Menge: {quantity}",
     "total": "Gesamt",
     "shippingAddress": "Lieferadresse",
+    "purchaseOrderDetails": "Bestelldetails",
+    "poNumber": "Bestellnummer (PO)",
     "continueShopping": "Weiter einkaufen",
     "viewOrders": "Bestellungen ansehen"
   }

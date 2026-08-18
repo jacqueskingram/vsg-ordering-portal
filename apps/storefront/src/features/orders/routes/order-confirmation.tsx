@@ -10,6 +10,7 @@ import {getRouteLocale} from '@/platform/i18n/server';
 import {getTranslations} from 'next-intl/server';
 import {query} from '@/platform/vendure/api';
 import {graphql} from '@/platform/vendure/graphql';
+import {poFields} from '@/platform/vendure/order-custom-fields';
 
 const GetOrderByCodeQuery = graphql(`
     query GetOrderByCode($code: String!) {
@@ -19,6 +20,10 @@ const GetOrderByCodeQuery = graphql(`
             state
             totalWithTax
             currencyCode
+            customFields {
+                purchaseOrderNumber
+                customerNotes
+            }
             lines {
                 id
                 productVariant {
@@ -65,6 +70,8 @@ export async function OrderConfirmation({paramsPromise}: OrderConfirmationProps)
     if (!order) {
         notFound();
     }
+
+    const po = poFields(order.customFields);
 
     return (
         <div className="container mx-auto px-4 py-16">
@@ -130,6 +137,20 @@ export async function OrderConfirmation({paramsPromise}: OrderConfirmationProps)
                         </div>
                     </CardContent>
                 </Card>
+
+                {po?.purchaseOrderNumber && (
+                    <Card className="mb-6">
+                        <CardHeader>
+                            <CardTitle>{t('purchaseOrderDetails')}</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-1">
+                            <p className="font-medium">{t('poNumber')}: {po?.purchaseOrderNumber}</p>
+                            {po?.customerNotes && (
+                                <p className="text-sm text-muted-foreground">{po?.customerNotes}</p>
+                            )}
+                        </CardContent>
+                    </Card>
+                )}
 
                 {order.shippingAddress && (
                     <Card className="mb-8">

@@ -128,6 +128,11 @@ services:
         environment:
             DB_HOST: postgres_db
             DB_PORT: 5432
+        volumes:
+            # Uploaded assets (product images) must survive image rebuilds —
+            # without this, every rebuild silently wiped the demo catalog's
+            # images (found and fixed 2026-08-18, see DECISIONS.md).
+            - /volumes/vsg-ordering-portal/assets:/usr/src/app/apps/server/static/assets
         ports:
             - "127.0.0.1:3001:3001"
         labels:
@@ -146,6 +151,10 @@ services:
         environment:
             DB_HOST: postgres_db
             DB_PORT: 5432
+        volumes:
+            # Same asset volume as vendure-server — preview/thumbnail
+            # generation runs here via the job queue.
+            - /volumes/vsg-ordering-portal/assets:/usr/src/app/apps/server/static/assets
         labels:
             - "io.vendure.create.name=vsg-ordering-portal"
 

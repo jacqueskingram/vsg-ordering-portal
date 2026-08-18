@@ -3,6 +3,9 @@ import {
     DefaultJobQueuePlugin,
     DefaultSchedulerPlugin,
     DefaultSearchPlugin,
+    LanguageCode,
+    OrderCodeStrategy,
+    RequestContext,
     VendureConfig,
 } from '@vendure/core';
 import { defaultEmailHandlers, EmailPlugin, FileBasedTemplateLoader } from '@vendure/email-plugin';
@@ -16,6 +19,14 @@ const IS_DEV = process.env.APP_ENV === 'dev';
 // PORT wins because hosting platforms inject it into the environment at runtime, and that
 // must take precedence over any value baked into the .env file at scaffold time.
 const serverPort = +process.env.PORT || +process.env.VENDURE_SERVER_PORT || 3000;
+
+// VSG order numbers read as "VSG-XXXXXX" rather than Vendure's bare default code —
+// requested for branding when Jacques relays orders to the supplier.
+class VsgOrderCodeStrategy implements OrderCodeStrategy {
+    generate(ctx: RequestContext): string {
+        return `VSG-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+    }
+}
 
 export const config: VendureConfig = {
     apiOptions: {
@@ -55,12 +66,25 @@ export const config: VendureConfig = {
         username: process.env.DB_USERNAME,
         password: process.env.DB_PASSWORD,
     },
+    orderOptions: {
+        orderCodeStrategy: new VsgOrderCodeStrategy(),
+    },
     paymentOptions: {
         paymentMethodHandlers: [dummyPaymentHandler],
     },
     // When adding or altering custom field definitions, the database will
     // need to be updated. See the "Migrations" section in README.md.
-    customFields: {},
+    //
+    // These stay nullable at the DB level even though the storefront enforces
+    // purchaseOrderNumber as required at checkout — Order rows are created as
+    // soon as a cart exists, well before checkout, so a NOT NULL constraint
+    // here would break normal cart creation.
+    customFields: {
+        Order: [
+            { name: 'purchaseOrderNumber', type: 'string', nullable: true, label: [{ languageCode: LanguageCode.en, value: 'PO Number' }] },
+            { name: 'customerNotes', type: 'text', nullable: true, label: [{ languageCode: LanguageCode.en, value: 'Customer Notes' }] },
+        ],
+    },
     plugins: [
         GraphiqlPlugin.init(),
         AssetServerPlugin.init({

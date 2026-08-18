@@ -56,6 +56,10 @@ export const GetActiveOrderForCheckoutQuery = graphql(`
                 description
                 amountWithTax
             }
+            customFields {
+                purchaseOrderNumber
+                customerNotes
+            }
             lines {
                 id
                 productVariant {
@@ -228,6 +232,26 @@ export const AddPaymentToOrderMutation = graphql(`
                     method
                     amount
                     state
+                }
+            }
+            ... on ErrorResult {
+                errorCode
+                message
+            }
+        }
+    }
+`);
+
+export const SetOrderCustomFieldsMutation = graphql(`
+    mutation SetOrderCustomFields($input: UpdateOrderInput!) {
+        setOrderCustomFields(input: $input) {
+            __typename
+            ... on Order {
+                id
+                code
+                customFields {
+                    purchaseOrderNumber
+                    customerNotes
                 }
             }
             ... on ErrorResult {

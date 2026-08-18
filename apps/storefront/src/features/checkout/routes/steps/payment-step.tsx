@@ -1,64 +1,105 @@
 'use client';
 
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
-import { Card } from '@/components/ui/card';
-import { CreditCard } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Field, FieldLabel, FieldError, FieldGroup } from '@/components/ui/field';
+import { Loader2 } from 'lucide-react';
 import { useCheckout } from '../checkout-provider';
-import {useTranslations} from 'next-intl';
+import { setPurchaseOrderDetails } from '../actions';
+import { poFields } from '@/platform/vendure/order-custom-fields';
+import { useTranslations } from 'next-intl';
 
+// This step used to be a payment-method selector. This is a purchase-order
+// portal, not a storefront that takes card payments — there's nothing to pay
+// here. It collects the PO number (required) and optional notes instead,
+// then a single "standard-payment" method is applied silently (see
+// checkout-provider) purely to complete the order in Vendure's native flow.
+// The step key stays "payment" internally (see checkout-flow.tsx / types.ts)
+// to keep this change small — only the label and content changed.
+//
+// A "requested delivery date" field was deliberately removed (2026-08-18) —
+// the user didn't want to imply VSG commits to hitting customer-requested
+// dates at this stage.
 interface PaymentStepProps {
-  onComplete: () => void;
+    onComplete: () => void;
 }
 
 export default function PaymentStep({ onComplete }: PaymentStepProps) {
-  const t = useTranslations('Checkout');
-  const { paymentMethods, selectedPaymentMethodCode, setSelectedPaymentMethodCode } = useCheckout();
+    const t = useTranslations('Checkout');
+    const { order, paymentMethods, selectedPaymentMethodCode } = useCheckout();
+    const existing = poFields(order.customFields);
+    const [poNumber, setPoNumber] = useState(existing?.purchaseOrderNumber ?? '');
+    const [notes, setNotes] = useState(existing?.customerNotes ?? '');
+    const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
 
-  const handleContinue = () => {
-    if (!selectedPaymentMethodCode) return;
-    onComplete();
-  };
+    const handleContinue = async () => {
+        if (!poNumber.trim()) {
+            setError(t('poNumberRequired'));
+            return;
+        }
+        if (!selectedPaymentMethodCode) {
+            setError(t('noPaymentMethods'));
+            return;
+        }
+        setError(null);
+        setLoading(true);
+        try {
+            await setPurchaseOrderDetails({
+                purchaseOrderNumber: poNumber.trim(),
+                customerNotes: notes.trim() || undefined,
+            });
+            onComplete();
+        } catch (err) {
+            // Only show our own thrown message (e.g. an ErrorResult from the
+            // mutation) to the customer — anything else is a framework/network
+            // failure whose message is either unhelpful or, in production
+            // builds, a cryptic minified React error code.
+            const message = err instanceof Error ? err.message : '';
+            setError(
+                message.startsWith('Failed to set purchase order details')
+                    ? message
+                    : t('unexpectedError')
+            );
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  if (paymentMethods.length === 0) {
     return (
-      <div className="text-center py-8">
-        <p className="text-muted-foreground">{t('noPaymentMethods')}</p>
-      </div>
+        <div className="space-y-6">
+            <h3 className="font-semibold">{t('purchaseOrderDetails')}</h3>
+
+            <FieldGroup>
+                <Field>
+                    <FieldLabel htmlFor="poNumber">{t('poNumber')} *</FieldLabel>
+                    <Input
+                        id="poNumber"
+                        value={poNumber}
+                        onChange={(e) => setPoNumber(e.target.value)}
+                        placeholder={t('poNumberPlaceholder')}
+                        required
+                    />
+                </Field>
+                <Field>
+                    <FieldLabel htmlFor="notes">{t('customerNotes')}</FieldLabel>
+                    <Textarea
+                        id="notes"
+                        value={notes}
+                        onChange={(e) => setNotes(e.target.value)}
+                        placeholder={t('customerNotesPlaceholder')}
+                        rows={3}
+                    />
+                </Field>
+                {error && <FieldError>{error}</FieldError>}
+            </FieldGroup>
+
+            <Button onClick={handleContinue} disabled={loading} className="w-full">
+                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {t('continueToReview')}
+            </Button>
+        </div>
     );
-  }
-
-  return (
-    <div className="space-y-6">
-      <h3 className="font-semibold">{t('selectPaymentMethod')}</h3>
-
-      <RadioGroup value={selectedPaymentMethodCode || ''} onValueChange={setSelectedPaymentMethodCode}>
-        {paymentMethods.map((method) => (
-          <Label key={method.code} htmlFor={method.code} className="cursor-pointer">
-            <Card className="p-4">
-              <div className="flex items-center gap-3">
-                <RadioGroupItem value={method.code} id={method.code} />
-                <CreditCard className="h-5 w-5 text-muted-foreground" />
-                <div className="flex-1">
-                  <p className="font-medium">{method.name}</p>
-                  {method.description && (
-                    <p className="text-sm text-muted-foreground mt-1" dangerouslySetInnerHTML={{ __html: method.description }} />
-                  )}
-                </div>
-              </div>
-            </Card>
-          </Label>
-        ))}
-      </RadioGroup>
-
-      <Button
-        onClick={handleContinue}
-        disabled={!selectedPaymentMethodCode}
-        className="w-full"
-      >
-        {t('continueToReview')}
-      </Button>
-    </div>
-  );
 }

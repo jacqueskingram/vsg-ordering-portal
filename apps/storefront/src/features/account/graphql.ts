@@ -57,6 +57,9 @@ export const GetCustomerOrdersQuery = graphql(`
                     currencyCode
                     createdAt
                     updatedAt
+                    customFields {
+                        purchaseOrderNumber
+                    }
                     lines {
                         id
                         productVariant {
@@ -95,6 +98,10 @@ export const GetOrderDetailQuery = graphql(`
             total
             totalWithTax
             currencyCode
+            customFields {
+                purchaseOrderNumber
+                customerNotes
+            }
             customer {
                 id
                 firstName

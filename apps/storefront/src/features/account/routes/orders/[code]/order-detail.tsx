@@ -5,12 +5,11 @@ import {ChevronLeft} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 import {Separator} from '@/components/ui/separator';
-import {Badge} from '@/components/ui/badge';
 import Image from 'next/image';
 import {Link} from '@/platform/i18n/navigation';
 import {Price} from '@/features/pricing/price';
-import {OrderStatusBadge} from '@/features/orders/order-status-badge';
 import {formatDate} from '@/platform/i18n/format';
+import {poFields} from '@/platform/vendure/order-custom-fields';
 import {useLocale, useTranslations} from 'next-intl';
 import type {ResultOf} from '@/platform/vendure/graphql';
 import type {GetOrderDetailQuery} from '@/features/account/graphql';
@@ -18,7 +17,6 @@ import type {GetOrderDetailQuery} from '@/features/account/graphql';
 type OrderByCode = NonNullable<ResultOf<typeof GetOrderDetailQuery>['orderByCode']>;
 type OrderLineItem = OrderByCode['lines'][number];
 type OrderDiscount = OrderByCode['discounts'][number];
-type OrderPayment = NonNullable<OrderByCode['payments']>[number];
 type OrderShippingLine = NonNullable<OrderByCode['shippingLines']>[number];
 
 interface OrderDetailProps {
@@ -35,6 +33,8 @@ export function OrderDetail({orderPromise}: OrderDetailProps) {
         return null;
     }
 
+    const po = poFields(order.customFields);
+
     return (
         <div>
             <div className="mb-6">
@@ -42,14 +42,11 @@ export function OrderDetail({orderPromise}: OrderDetailProps) {
                         <ChevronLeft className="h-4 w-4 mr-2"/>
                         {t('backToOrders')}
                 </Button>
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h1 className="text-3xl font-bold">{t('order', {code: order.code})}</h1>
-                        <p className="text-muted-foreground mt-1">
-                            {t('placedOn', {date: formatDate(order.createdAt, 'long', locale)})}
-                        </p>
-                    </div>
-                    <OrderStatusBadge state={order.state}/>
+                <div>
+                    <h1 className="text-3xl font-bold">{t('order', {code: order.code})}</h1>
+                    <p className="text-muted-foreground mt-1">
+                        {t('placedOn', {date: formatDate(order.createdAt, 'long', locale)})}
+                    </p>
                 </div>
             </div>
 
@@ -164,32 +161,17 @@ export function OrderDetail({orderPromise}: OrderDetailProps) {
                         </Card>
                     )}
 
-                    {order.payments && order.payments.length > 0 && (
+                    {po?.purchaseOrderNumber && (
                         <Card>
-                            <CardHeader><CardTitle>{t('payment')}</CardTitle></CardHeader>
-                            <CardContent>
-                                {order.payments.map((payment: OrderPayment) => (
-                                    <div key={payment.id} className="space-y-1 text-sm">
-                                        <div className="flex justify-between">
-                                            <span className="text-muted-foreground">{t('method')}</span>
-                                            <span className="font-medium">{payment.method}</span>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <span className="text-muted-foreground">{t('amount')}</span>
-                                            <span><Price value={payment.amount} currencyCode={order.currencyCode}/></span>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <span className="text-muted-foreground">{t('paymentStatus')}</span>
-                                            <Badge variant="secondary" className="text-xs">{payment.state}</Badge>
-                                        </div>
-                                        {payment.transactionId && (
-                                            <div className="flex justify-between">
-                                                <span className="text-muted-foreground">{t('transactionId')}</span>
-                                                <span className="font-mono text-xs">{payment.transactionId}</span>
-                                            </div>
-                                        )}
-                                    </div>
-                                ))}
+                            <CardHeader><CardTitle>{t('purchaseOrderDetails')}</CardTitle></CardHeader>
+                            <CardContent className="text-sm space-y-1">
+                                <div className="flex justify-between">
+                                    <span className="text-muted-foreground">{t('poNumber')}</span>
+                                    <span className="font-medium">{po?.purchaseOrderNumber}</span>
+                                </div>
+                                {po?.customerNotes && (
+                                    <p className="text-muted-foreground pt-2">{po?.customerNotes}</p>
+                                )}
                             </CardContent>
                         </Card>
                     )}

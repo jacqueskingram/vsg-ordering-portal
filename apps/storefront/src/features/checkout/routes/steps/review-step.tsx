@@ -2,10 +2,11 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Loader2, MapPin, Truck, CreditCard, Edit, Mail } from 'lucide-react';
+import { Loader2, MapPin, Truck, FileText, Edit, Mail } from 'lucide-react';
 import { useCheckout } from '../checkout-provider';
 import { placeOrder as placeOrderAction } from '../actions';
 import { Price } from '@/features/pricing/price';
+import { poFields } from '@/platform/vendure/order-custom-fields';
 import {useTranslations} from 'next-intl';
 
 interface ReviewStepProps {
@@ -16,6 +17,7 @@ export default function ReviewStep({ onEditStep }: ReviewStepProps) {
   const t = useTranslations('Checkout');
   const { order, paymentMethods, selectedPaymentMethodCode, isGuest } = useCheckout();
   const [loading, setLoading] = useState(false);
+  const po = poFields(order.customFields);
 
   const selectedPaymentMethod = paymentMethods.find(
     (method) => method.code === selectedPaymentMethodCode
@@ -130,18 +132,18 @@ export default function ReviewStep({ onEditStep }: ReviewStepProps) {
           )}
         </div>
 
-        {/* Payment Method */}
+        {/* Purchase Order details */}
         <div className="space-y-3">
           <div className="flex items-center gap-2">
-            <CreditCard className="h-5 w-5 text-muted-foreground" />
-            <h4 className="font-medium">{t('paymentMethod')}</h4>
+            <FileText className="h-5 w-5 text-muted-foreground" />
+            <h4 className="font-medium">{t('purchaseOrderDetails')}</h4>
           </div>
-          {selectedPaymentMethod ? (
+          {po?.purchaseOrderNumber ? (
             <div className="text-sm space-y-3">
               <div>
-                <p className="font-medium">{selectedPaymentMethod.name}</p>
-                {selectedPaymentMethod.description && (
-                  <p className="text-muted-foreground mt-1" dangerouslySetInnerHTML={{ __html: selectedPaymentMethod.description }} />
+                <p className="font-medium">{t('poNumber')}: {po?.purchaseOrderNumber}</p>
+                {po?.customerNotes && (
+                  <p className="text-muted-foreground">{po?.customerNotes}</p>
                 )}
               </div>
               <Button
@@ -161,15 +163,15 @@ export default function ReviewStep({ onEditStep }: ReviewStepProps) {
 
       <Button
         onClick={handlePlaceOrder}
-        disabled={loading || !order.shippingAddress || !order.shippingLines?.length || !selectedPaymentMethodCode}
+        disabled={loading || !order.shippingAddress || !order.shippingLines?.length || !selectedPaymentMethodCode || !po?.purchaseOrderNumber}
         size="lg"
         className="w-full"
       >
         {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-        {t('placeOrder')}
+        {t('submitPurchaseOrder')}
       </Button>
 
-      {(!order.shippingAddress || !order.shippingLines?.length || !selectedPaymentMethodCode) && (
+      {(!order.shippingAddress || !order.shippingLines?.length || !selectedPaymentMethodCode || !po?.purchaseOrderNumber) && (
         <p className="text-sm text-destructive text-center">
           {t('completeAllSteps')}
         </p>
