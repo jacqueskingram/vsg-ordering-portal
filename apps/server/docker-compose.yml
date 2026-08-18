@@ -1,0 +1,192 @@
+# INFORMATION
+# We are not exposing the default ports for the services in this file.
+# This is to avoid conflicts with existing services on your machine.
+# In case you don't have any services running on the default ports, you can expose them by changing the
+# ports section in the services block. Please don't forget to update the ports in the .env file as well.
+
+# The explicit project name keeps this project's containers and volumes distinct from
+# those of other projects, even when this file lives in an identically-named directory
+# (e.g. apps/server in a monorepo). Quoted so that numeric-looking names (e.g. "123")
+# stay YAML strings — Compose rejects a non-string name.
+name: 'vsg-ordering-portal'
+
+services:
+    postgres_db:
+        image: postgres:16-alpine
+        volumes:
+            - postgres_db_data:/var/lib/postgresql/data
+        ports:
+            - "127.0.0.1:6543:5432"
+        environment:
+            POSTGRES_DB: vendure
+            POSTGRES_USER: vendure
+            POSTGRES_PASSWORD: WtuB9onwB0cDQtxzVaPU1Q
+        labels:
+            - "io.vendure.create.name=vsg-ordering-portal"
+
+    mysql_db:
+        image: mysql:8
+        volumes:
+            - mysql_db_data:/var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: 'ROOT'
+            MYSQL_DATABASE: vendure
+            MYSQL_USER: vendure
+            MYSQL_PASSWORD: WtuB9onwB0cDQtxzVaPU1Q
+        ports:
+            - "4306:3306"
+        labels:
+            - "io.vendure.create.name=vsg-ordering-portal"
+
+    mariadb_db:
+        image: mariadb:10
+        volumes:
+            - mariadb_db_data:/var/lib/mysql
+        environment:
+            MARIADB_ROOT_PASSWORD: 'ROOT'
+            MARIADB_DATABASE: vendure
+            MARIADB_USER: vendure
+            MARIADB_PASSWORD: WtuB9onwB0cDQtxzVaPU1Q
+        ports:
+            - "3306:3306"
+        labels:
+            - "io.vendure.create.name=vsg-ordering-portal"
+
+    # RECOMMENDED (especially for production)
+    # Want to use our BullMQ with Redis instead of our default database job queue?
+    # Checkout our BullMQ plugin: https://docs.vendure.io/reference/core-plugins/job-queue-plugin/bull-mqjob-queue-plugin/
+    redis:
+        image: redis:7-alpine
+        ports:
+            - "6479:6379"
+        volumes:
+            - redis_data:/data
+        labels:
+            - "io.vendure.create.name=vsg-ordering-portal"
+
+    # RECOMMENDED
+    # Want to use Typesense instead of our default search engine?
+    # Checkout our advanced search plugin: https://vendure.io/hub/vendure-plus-advanced-search-plugin
+    # To run the typesense container run "docker compose up -d typesense"
+    typesense:
+        image: typesense/typesense:27.0
+        command: [ '--data-dir', '/data', '--api-key', 'SuperSecret' ]
+        ports:
+            - "8208:8108"
+        volumes:
+            - typesense_data:/data
+        labels:
+            - "io.vendure.create.name=vsg-ordering-portal"
+
+    # Want to use Elasticsearch instead of our default database engine?
+    # Checkout the community Elasticsearch plugin: https://github.com/vendurehq/vendure-community-plugins
+    # To run the elasticsearch container run "docker compose up -d elasticsearch"
+    elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:9.1.0
+        container_name: elasticsearch
+        environment:
+            - node.name=es
+            - cluster.name=es-docker-cluster
+            - xpack.security.enabled=false
+            - xpack.security.http.ssl.enabled=false
+            - xpack.security.transport.ssl.enabled=false
+            - xpack.license.self_generated.type=basic
+            - discovery.type=single-node
+            - bootstrap.memory_lock=true
+            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+        mem_limit: 536870912
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        volumes:
+            - elasticsearch_data:/usr/share/elasticsearch/data
+        ports:
+            - 9200:9200
+        labels:
+            - "io.vendure.create.name=vsg-ordering-portal"
+
+    # ------------------------------------------------------------------
+    # VSG Ordering Portal — Phase 1 application containers.
+    # Internal-only: no service below is bound to 0.0.0.0. Host bindings
+    # are 127.0.0.1-only, for local verification via SSH port-forward,
+    # and are not reachable from the public internet. None of these join
+    # the host's shared jacquesingramonline_default network yet — that
+    # only happens once public exposure is explicitly approved (Phase 2+).
+    # ------------------------------------------------------------------
+
+    vendure-server:
+        build:
+            context: ../..
+            dockerfile: apps/server/Dockerfile
+        command: npm run start:server
+        restart: unless-stopped
+        depends_on:
+            - postgres_db
+        env_file:
+            - .env
+        environment:
+            DB_HOST: postgres_db
+            DB_PORT: 5432
+        ports:
+            - "127.0.0.1:3001:3001"
+        labels:
+            - "io.vendure.create.name=vsg-ordering-portal"
+
+    vendure-worker:
+        build:
+            context: ../..
+            dockerfile: apps/server/Dockerfile
+        command: npm run start:worker
+        restart: unless-stopped
+        depends_on:
+            - postgres_db
+        env_file:
+            - .env
+        environment:
+            DB_HOST: postgres_db
+            DB_PORT: 5432
+        labels:
+            - "io.vendure.create.name=vsg-ordering-portal"
+
+    vsg-storefront:
+        build:
+            context: ../..
+            dockerfile: apps/storefront/Dockerfile
+        restart: unless-stopped
+        depends_on:
+            - vendure-server
+        env_file:
+            - ../storefront/.env.local
+        environment:
+            VENDURE_SHOP_API_URL: http://vendure-server:3001/shop-api
+        ports:
+            - "127.0.0.1:3002:3002"
+        labels:
+            - "io.vendure.create.name=vsg-ordering-portal"
+
+volumes:
+    postgres_db_data:
+        driver: local
+        labels:
+            - "io.vendure.create.name=vsg-ordering-portal"
+    mysql_db_data:
+        driver: local
+        labels:
+            - "io.vendure.create.name=vsg-ordering-portal"
+    mariadb_db_data:
+        driver: local
+        labels:
+            - "io.vendure.create.name=vsg-ordering-portal"
+    typesense_data:
+        driver: local
+        labels:
+            - "io.vendure.create.name=vsg-ordering-portal"
+    elasticsearch_data:
+        driver: local
+        labels:
+            - "io.vendure.create.name=vsg-ordering-portal"
+    redis_data:
+        driver: local
+        labels:
+            - "io.vendure.create.name=vsg-ordering-portal"

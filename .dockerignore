@@ -1,0 +1,6 @@
+.git
+apps/server/static/assets/cache
+apps/server/static/assets/preview
+apps/server/.vendure
+apps/storefront/.vendure
+*.log
