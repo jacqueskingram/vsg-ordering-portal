@@ -1,28 +1,28 @@
 {
   "Hero": {
-    "title": "Entdecke hochwertige",
-    "titleHighlight": "Produkte",
-    "subtitle": "Hochwertige Produkte zu außergewöhnlichen Preisen. Kostenloser Versand ab 50 €.",
-    "shopNow": "Jetzt einkaufen",
+    "title": "Virtus Solutions Group",
+    "titleHighlight": "Bestellportal",
+    "subtitle": "Durchsuchen Sie Ihren freigegebenen Katalog und senden Sie Bestellungen direkt an VSG.",
+    "shopNow": "Katalog ansehen",
     "viewCollections": "Kategorien ansehen"
   },
   "Home": {
-    "pageTitle": "Ihr One-Stop-Shop",
-    "description": "Entdecken Sie hochwertige Produkte zu wettbewerbsfähigen Preisen. Jetzt einkaufen und die besten Angebote für Elektronik, Mode, Haushaltswaren und mehr finden.",
-    "ogDescription": "Entdecken Sie hochwertige Produkte zu wettbewerbsfähigen Preisen. Jetzt die besten Angebote sichern.",
-    "whyShopWithUs": "Warum bei uns einkaufen",
+    "pageTitle": "Bestellportal",
+    "description": "Das private Bestellportal von Virtus Solutions Group für freigegebene Reinigungs- und Hausmeisterbedarfsartikel.",
+    "ogDescription": "Das private Bestellportal von Virtus Solutions Group für zugelassene Kunden.",
+    "whyShopWithUs": "So funktioniert die Bestellung",
     "features": {
       "highQuality": {
-        "title": "Hohe Qualität",
-        "description": "Sorgfältig ausgewählte Premiumprodukte für Sie"
+        "title": "Freigegebener Katalog",
+        "description": "Jeder Artikel wurde für Ihr Konto geprüft und freigegeben"
       },
       "bestPrices": {
-        "title": "Beste Preise",
-        "description": "Wettbewerbsfähige Preise für alle unsere Produkte"
+        "title": "Verlässliche Preise",
+        "description": "Vereinbarte Preise bei jeder Bestellung, keine Überraschungen"
       },
       "fastDelivery": {
-        "title": "Schnelle Lieferung",
-        "description": "Schneller und zuverlässiger Versand weltweit"
+        "title": "Zuverlässige Lieferung",
+        "description": "Bestellungen werden direkt an Ihre Einrichtung geliefert"
       }
     }
   }

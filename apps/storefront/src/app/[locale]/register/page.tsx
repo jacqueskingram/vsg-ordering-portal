@@ -1,1 +1,1 @@
-export {default, generateMetadata} from '@/features/authentication/routes/register/page';
+export {default} from '@/features/authentication/routes/register/page';

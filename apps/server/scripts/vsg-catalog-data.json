@@ -1,0 +1,40 @@
+{
+  "note": "Placeholder demo catalog derived from the Excelsior Springs Job Corps janitorial bid sheet. Names/categories/pack sizes/brands are real; prices are placeholders (bid pricing not yet finalized with Hillyard) and SKUs are placeholder VSG item IDs. Replace with real bid pricing and final SKUs in Phase 3.",
+  "categories": [
+    { "code": "paper-products", "name": "Paper Products" },
+    { "code": "trash-liners", "name": "Trash Liners" },
+    { "code": "cleaners-disinfectants", "name": "Cleaners & Disinfectants" },
+    { "code": "gloves-ppe", "name": "Gloves & PPE" },
+    { "code": "soap-sanitizer", "name": "Soap & Sanitizer" },
+    { "code": "floor-care", "name": "Floor Care" },
+    { "code": "air-care", "name": "Air Care" },
+    { "code": "tools-misc", "name": "Tools & Misc" }
+  ],
+  "products": [
+    { "sku": "VSG-001", "name": "Paper Towel Dispenser Rolls", "packSize": "6/Bx", "brand": "Hillyard", "category": "paper-products", "priceUsd": 34.99 },
+    { "sku": "VSG-002", "name": "Toilet Paper Dispenser Rolls, Large", "packSize": "12/Bx", "brand": "Hillyard", "category": "paper-products", "priceUsd": 42.99 },
+    { "sku": "VSG-003", "name": "Facial Tissues", "packSize": "30/Bx", "brand": "Hillyard", "category": "paper-products", "priceUsd": 28.50 },
+    { "sku": "VSG-004", "name": "Air Freshener, Solid", "packSize": "36/Bx", "brand": null, "category": "air-care", "priceUsd": 45.00 },
+    { "sku": "VSG-005", "name": "Air Freshener, Spray", "packSize": "12/Cs", "brand": "Hillyard", "category": "air-care", "priceUsd": 38.75 },
+    { "sku": "VSG-006", "name": "Trash Bags, Small", "packSize": "500/Bx", "brand": "Hillyard", "category": "trash-liners", "priceUsd": 22.99 },
+    { "sku": "VSG-007", "name": "Trash Bags, Large", "packSize": "100/Bx", "brand": "Hillyard", "category": "trash-liners", "priceUsd": 31.50 },
+    { "sku": "VSG-008", "name": "Multi-Task Cloth Wipes", "packSize": "12/Pk", "brand": "Hillyard", "category": "cleaners-disinfectants", "priceUsd": 19.99 },
+    { "sku": "VSG-009", "name": "Bleach", "packSize": "6, 1 gal/Bx", "brand": "Hillyard", "category": "cleaners-disinfectants", "priceUsd": 27.00 },
+    { "sku": "VSG-010", "name": "Toilet Bowl Cleaning Liquid", "packSize": "12/Bx", "brand": "Hillyard", "category": "cleaners-disinfectants", "priceUsd": 36.25 },
+    { "sku": "VSG-011", "name": "Powder Cleaning Chemicals", "packSize": "1 Ea", "brand": "Comet", "category": "cleaners-disinfectants", "priceUsd": 6.99 },
+    { "sku": "VSG-012", "name": "Disinfectant Wipes", "packSize": "6/Pk", "brand": "Hillyard", "category": "cleaners-disinfectants", "priceUsd": 24.50 },
+    { "sku": "VSG-013", "name": "Carpet Deodorizer", "packSize": "1 Ea", "brand": "Hillyard", "category": "floor-care", "priceUsd": 14.99 },
+    { "sku": "VSG-014", "name": "Hard Floor Cleaning Liquid", "packSize": "4, 1 gal/Bx", "brand": "Hillyard", "category": "floor-care", "priceUsd": 33.00 },
+    { "sku": "VSG-015", "name": "Nitrile Gloves, Small", "packSize": "10 Bx/Cs = 100", "brand": "Safety Zone", "category": "gloves-ppe", "priceUsd": 52.99 },
+    { "sku": "VSG-016", "name": "Nitrile Gloves, Medium", "packSize": "10 Bx/Cs = 100", "brand": "Safety Zone", "category": "gloves-ppe", "priceUsd": 52.99 },
+    { "sku": "VSG-017", "name": "Nitrile Gloves, Large", "packSize": "10 Bx/Cs = 100", "brand": "Safety Zone", "category": "gloves-ppe", "priceUsd": 52.99 },
+    { "sku": "VSG-018", "name": "Nitrile Gloves, XL", "packSize": "10 Bx/Cs = 100", "brand": "Safety Zone", "category": "gloves-ppe", "priceUsd": 54.99 },
+    { "sku": "VSG-019", "name": "Spray Bottles, Empty", "packSize": "1 Ea, 32oz", "brand": "Hillyard", "category": "tools-misc", "priceUsd": 2.25 },
+    { "sku": "VSG-020", "name": "Hand Soap", "packSize": "4/Bx", "brand": "Hillyard", "category": "soap-sanitizer", "priceUsd": 29.99 },
+    { "sku": "VSG-021", "name": "Hand Sanitizer, Wall Mounted Pump", "packSize": "4/Bx", "brand": "Hillyard", "category": "soap-sanitizer", "priceUsd": 41.00 },
+    { "sku": "VSG-022", "name": "Mop Heads, Wet", "packSize": "1 Ea", "brand": "Hillyard", "category": "floor-care", "priceUsd": 8.75 },
+    { "sku": "VSG-023", "name": "Mop Heads, Dry", "packSize": "1 Ea", "brand": "Hillyard", "category": "floor-care", "priceUsd": 7.50 },
+    { "sku": "VSG-024", "name": "Toilet Brush", "packSize": "1 Ea", "brand": "Hillyard", "category": "tools-misc", "priceUsd": 4.25 },
+    { "sku": "VSG-025", "name": "Toilet Brush Holder", "packSize": "24/Pk", "brand": "Rubbermaid", "category": "tools-misc", "priceUsd": 63.00 }
+  ]
+}

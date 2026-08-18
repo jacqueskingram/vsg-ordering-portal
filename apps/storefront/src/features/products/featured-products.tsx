@@ -16,12 +16,13 @@ async function getFeaturedCollectionProducts(currencyCode: string) {
     cacheTag(`featured-${locale}-${currencyCode}`);
     cacheTag('products');
 
-    // Fetch featured products from a specific collection
-    // Replace 'featured' with your actual collection slug
+    // Feature the Cleaners & Disinfectants category on the homepage — the
+    // largest category in the current catalog. Revisit once there's a
+    // real editorial reason to feature a specific set of products.
     const result = await query(GetCollectionProductsQuery, {
-        slug: "electronics",
+        slug: "cleaners-disinfectants",
         input: {
-            collectionSlug: "electronics",
+            collectionSlug: "cleaners-disinfectants",
             take: 12,
             skip: 0,
             groupByProduct: true

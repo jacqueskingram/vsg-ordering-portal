@@ -1,5 +1,6 @@
 import type {Metadata} from 'next';
 import {Suspense} from 'react';
+import Image from 'next/image';
 import {getRouteLocale} from '@/platform/i18n/server';
 import {getTranslations} from 'next-intl/server';
 import {LoginForm} from "./login-form";
@@ -54,21 +55,31 @@ export default async function SignInPage({searchParams}: PageProps<'/[locale]/si
         <div className="flex min-h-[calc(100vh-4rem)] mt-16">
             {/* Branded panel - desktop only */}
             <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary to-primary/70 items-center justify-center p-12 rounded-br-3xl">
-                <div className="max-w-md text-primary-foreground space-y-6">
-                    <h2 className="text-4xl font-bold tracking-tight">{SITE_NAME}</h2>
-                    <p className="text-xl text-primary-foreground/80 leading-relaxed">
-                        {t('welcomeBack')}
-                    </p>
-                    <div className="flex gap-8 pt-4">
-                        <div>
+                <div className="max-w-md w-full text-primary-foreground space-y-8">
+                    <Image
+                        src="/virtus-mark.png"
+                        alt=""
+                        width={512}
+                        height={512}
+                        className="w-64 h-64 mx-auto drop-shadow-lg"
+                        priority
+                    />
+                    <div className="text-center space-y-4">
+                        <h2 className="text-4xl font-bold tracking-tight">{SITE_NAME}</h2>
+                        <p className="text-xl text-primary-foreground/80 leading-relaxed">
+                            {t('welcomeBack')}
+                        </p>
+                    </div>
+                    <div className="flex justify-center gap-10 pt-4 border-t border-primary-foreground/15">
+                        <div className="text-center">
                             <p className="text-3xl font-bold">{t('featureFast')}</p>
                             <p className="text-sm text-primary-foreground/70">{t('featureCheckout')}</p>
                         </div>
-                        <div>
+                        <div className="text-center">
                             <p className="text-3xl font-bold">{t('featureSecure')}</p>
                             <p className="text-sm text-primary-foreground/70">{t('featurePayments')}</p>
                         </div>
-                        <div>
+                        <div className="text-center">
                             <p className="text-3xl font-bold">{t('featureEasy')}</p>
                             <p className="text-sm text-primary-foreground/70">{t('featureReturns')}</p>
                         </div>

@@ -7,17 +7,12 @@
     "popularCollections": "Beliebte Kategorien"
   },
   "Footer": {
-    "description": "Ein moderner, Headless-E-Commerce-Shop, erstellt mit Vendure und Next.js. Schnell, flexibel und produktionsbereit.",
+    "description": "Virtus Solutions Group LLC — ein privates Bestellportal für zugelassene Kunden.",
     "categories": "Kategorien",
     "customer": "Kunde",
     "shopAll": "Alle Produkte",
     "orders": "Bestellungen",
     "account": "Konto",
-    "vendure": "Vendure",
-    "github": "GitHub",
-    "documentation": "Dokumentation",
-    "sourceCode": "Quellcode",
-    "copyright": "Vendure Store. Alle Rechte vorbehalten.",
-    "poweredBy": "Powered by"
+    "copyright": "Virtus Solutions Group LLC. Alle Rechte vorbehalten."
   }
 }

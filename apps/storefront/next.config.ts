@@ -17,6 +17,13 @@ const nextConfig: NextConfig = {
             },
             {
                 hostname: 'localhost'
+            },
+            {
+                // Internal Docker hostname for vendure-server — see DEPLOYMENT.md.
+                // Next's image optimizer runs server-side inside this container and
+                // fetches asset images from Vendure over the compose network, so this
+                // hostname (not a public one) is what actually needs to be allowed.
+                hostname: 'vendure-server'
             }
         ],
     }

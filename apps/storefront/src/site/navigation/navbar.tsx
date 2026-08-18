@@ -16,21 +16,21 @@ export function Navbar() {
     return (
         <header className="fixed top-0 left-0 right-0 z-50 border-b backdrop-blur-md bg-background/80">
             <div className="container mx-auto px-4">
-                <div className="flex items-center justify-between h-16">
-                    <div className="flex items-center gap-8">
+                <div className="flex items-center justify-between h-16 gap-4">
+                    <div className="flex items-center gap-6">
                         <Suspense>
                             <MobileNavWrapper />
                         </Suspense>
-                        <NavigationLink href="/" className="text-xl font-bold">
-                            <Image src="/vendure.svg" alt="Vendure" width={40} height={27} className="h-6 w-auto dark:invert" />
+                        <NavigationLink href="/" className="flex shrink-0 items-center" aria-label="Virtus Solutions Group">
+                            <Image src="/virtus-mark.png" alt="Virtus Solutions Group" width={44} height={44} className="h-10 w-10" priority />
                         </NavigationLink>
-                        <nav className="hidden md:flex items-center gap-6">
+                        <nav className="hidden md:flex items-center">
                             <Suspense>
                                 <NavbarCollections/>
                             </Suspense>
                         </nav>
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 shrink-0">
                         <div className="hidden lg:flex">
                             <Suspense fallback={<SearchInputSkeleton />}>
                                 <SearchInput/>

@@ -5,8 +5,10 @@ import {
     NavigationMenu,
     NavigationMenuList,
     NavigationMenuItem,
+    NavigationMenuTrigger,
+    NavigationMenuContent,
+    NavigationMenuLink,
 } from '@/components/ui/navigation-menu';
-import {NavbarLink} from '@/site/navigation/navbar/navbar-link';
 
 export async function NavbarCollections() {
     "use cache";
@@ -20,13 +22,27 @@ export async function NavbarCollections() {
     return (
         <NavigationMenu>
             <NavigationMenuList>
-                {collections.map((collection) => (
-                    <NavigationMenuItem key={collection.slug}>
-                        <NavbarLink href={`/collection/${collection.slug}`}>
-                            {collection.name}
-                        </NavbarLink>
-                    </NavigationMenuItem>
-                ))}
+                <NavigationMenuItem>
+                    <NavigationMenuTrigger>{locale === 'de' ? 'Kategorien' : 'Collections'}</NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                        <ul className="grid w-56 gap-1">
+                            {collections.map((collection) => (
+                                <li key={collection.slug}>
+                                    <NavigationMenuLink
+                                        render={
+                                            <a
+                                                href={`/${locale}/collection/${collection.slug}`}
+                                                className="block rounded-md px-3 py-2 text-sm hover:bg-muted"
+                                            />
+                                        }
+                                    >
+                                        {collection.name}
+                                    </NavigationMenuLink>
+                                </li>
+                            ))}
+                        </ul>
+                    </NavigationMenuContent>
+                </NavigationMenuItem>
             </NavigationMenuList>
         </NavigationMenu>
     );

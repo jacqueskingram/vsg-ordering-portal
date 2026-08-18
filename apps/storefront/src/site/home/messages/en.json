@@ -1,28 +1,28 @@
 {
   "Hero": {
-    "title": "Discover Quality",
-    "titleHighlight": "Products",
-    "subtitle": "Premium products, exceptional prices. Free shipping on orders over $50.",
-    "shopNow": "Shop Now",
-    "viewCollections": "View Collections"
+    "title": "Virtus Solutions Group",
+    "titleHighlight": "Ordering Portal",
+    "subtitle": "Browse your approved catalog and submit purchase orders directly to VSG.",
+    "shopNow": "View Catalog",
+    "viewCollections": "Browse Categories"
   },
   "Home": {
-    "pageTitle": "Your One-Stop Shop",
-    "description": "Discover high-quality products at competitive prices. Shop now for the best deals on electronics, fashion, home goods, and more.",
-    "ogDescription": "Discover high-quality products at competitive prices. Shop now for the best deals.",
-    "whyShopWithUs": "Why Shop With Us",
+    "pageTitle": "Ordering Portal",
+    "description": "Virtus Solutions Group's private ordering portal for approved janitorial and custodial supplies.",
+    "ogDescription": "Virtus Solutions Group's private ordering portal for approved customers.",
+    "whyShopWithUs": "How Ordering Works",
     "features": {
       "highQuality": {
-        "title": "High Quality",
-        "description": "Premium products carefully selected for you"
+        "title": "Approved Catalog",
+        "description": "Every item vetted and approved for your account"
       },
       "bestPrices": {
-        "title": "Best Prices",
-        "description": "Competitive pricing on all our products"
+        "title": "Consistent Pricing",
+        "description": "Agreed pricing on every order, no surprises"
       },
       "fastDelivery": {
-        "title": "Fast Delivery",
-        "description": "Quick and reliable shipping worldwide"
+        "title": "Reliable Fulfillment",
+        "description": "Orders shipped directly to your facility"
       }
     }
   }

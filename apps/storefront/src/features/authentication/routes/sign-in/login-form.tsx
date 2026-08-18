@@ -8,7 +8,7 @@ import {loginAction} from './actions';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {PasswordInput} from '@/components/ui/password-input';
-import {Card, CardContent, CardFooter} from '@/components/ui/card';
+import {Card, CardContent} from '@/components/ui/card';
 import {
     Form,
     FormControl,
@@ -61,10 +61,6 @@ export function LoginForm({redirectTo}: LoginFormProps) {
             }
         });
     };
-
-    const registerHref = redirectTo
-        ? `/register?redirectTo=${encodeURIComponent(redirectTo)}`
-        : '/register';
 
     return (
         <Card>
@@ -126,14 +122,6 @@ export function LoginForm({redirectTo}: LoginFormProps) {
                             {isPending ? t('signingIn') : t('signIn')}
                         </Button>
                     </CardContent>
-                    <CardFooter className="flex flex-col space-y-4 mt-2">
-                        <div className="text-muted-foreground text-sm text-center">
-                            {t('noAccount')}{' '}
-                            <Link href={registerHref} className="hover:text-primary underline">
-                                {t('register')}
-                            </Link>
-                        </div>
-                    </CardFooter>
                 </form>
             </Form>
         </Card>

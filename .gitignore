@@ -3,3 +3,12 @@ node_modules
 .env.local
 *.log
 .DS_Store
+
+# Internal working docs — not part of the public repo history
+ARCHITECTURE.md
+BACKUP_RESTORE.md
+DECISIONS.md
+DEPLOYMENT.md
+PHASE_STATUS.md
+SECURITY.md
+SERVER_SNAPSHOT.md
