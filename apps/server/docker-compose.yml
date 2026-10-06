@@ -13,6 +13,7 @@ name: 'vsg-ordering-portal'
 services:
     postgres_db:
         image: postgres:16-alpine
+        restart: unless-stopped
         volumes:
             - postgres_db_data:/var/lib/postgresql/data
         ports:
@@ -107,12 +108,13 @@ services:
             - "io.vendure.create.name=vsg-ordering-portal"
 
     # ------------------------------------------------------------------
-    # VSG Ordering Portal — Phase 1 application containers.
-    # Internal-only: no service below is bound to 0.0.0.0. Host bindings
-    # are 127.0.0.1-only, for local verification via SSH port-forward,
-    # and are not reachable from the public internet. None of these join
-    # the host's shared jacquesingramonline_default network yet — that
-    # only happens once public exposure is explicitly approved (Phase 2+).
+    # VSG Ordering Portal — application containers.
+    # vendure-server/vendure-worker/postgres stay internal-only (host
+    # bindings are 127.0.0.1-only, for SSH-tunnel access). vsg-storefront
+    # is the one exception: it also joins the host's shared
+    # jacquesingramonline_default network so nginx-proxy can publish it
+    # at orders.govirtus.net (customer demo, approved 2026-08-19). Admin
+    # API/dashboard are deliberately NOT exposed on that network.
     # ------------------------------------------------------------------
 
     vendure-server:
@@ -169,10 +171,21 @@ services:
             - ../storefront/.env.local
         environment:
             VENDURE_SHOP_API_URL: http://vendure-server:3001/shop-api
+            VIRTUAL_HOST: orders.govirtus.net
+            LETSENCRYPT_HOST: orders.govirtus.net
+            VIRTUAL_PORT: 3002
         ports:
             - "127.0.0.1:3002:3002"
+        networks:
+            - default
+            - proxy
         labels:
             - "io.vendure.create.name=vsg-ordering-portal"
+
+networks:
+    proxy:
+        name: jacquesingramonline_default
+        external: true
 
 volumes:
     postgres_db_data:
