@@ -1,0 +1,119 @@
+[
+  {
+    "updatedAt": "2026-10-09T14:27:53.058Z",
+    "createdAt": "2026-10-09T02:36:17.746Z",
+    "id": "uTCnH2hgjdtusYD6",
+    "name": "VSG - Order Placed Notification",
+    "description": null,
+    "active": true,
+    "isArchived": false,
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "vsg-order-placed",
+          "options": {}
+        },
+        "id": "a8d65752-0f11-43a0-985c-091da5192ab9",
+        "name": "Order Placed Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -304,
+          112
+        ],
+        "webhookId": "vsg-order-placed"
+      },
+      {
+        "parameters": {
+          "resource": "mail",
+          "fromEmail": "Jacqueskingram@gmail.com",
+          "fromName": "Jacques Ingram",
+          "toEmail": "jacques@jacquesingram.online",
+          "subject": "==New PO placed - {{ $json.body.orderCode }}",
+          "contentValue": "=A new purchase order was just submitted on the portal.  Order code: {{ $json.body.orderCode }} PO number: {{ $json.body.poNumber }} Customer: {{ $json.body.customerName }} ({{ $json.body.customerEmail }}) Notes: {{ $json.body.customerNotes }} Total (with tax): {{ $json.body.totalWithTax }} {{ $json.body.currencyCode }}  Items: {{ $json.body.lines.map(l => `- ${l.quantity} x ${l.name} (${l.sku})`).join('\\n') }}  Placed at: {{ $json.body.placedAt }}",
+          "additionalFields": {}
+        },
+        "type": "n8n-nodes-base.sendGrid",
+        "typeVersion": 1,
+        "position": [
+          -112,
+          -96
+        ],
+        "id": "a8d7da32-462f-4c04-be2c-840a9d62e77b",
+        "name": "notify jacques",
+        "credentials": {
+          "sendGridApi": {
+            "id": "E8S23LdirYRdTDgF",
+            "name": "SendGrid account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "resource": "mail",
+          "fromEmail": "Jacqueskingram@gmail.com",
+          "fromName": "Jacques Ingram",
+          "toEmail": "jacques@jacquesingram.online",
+          "subject": "==New Purchase Order from VSG - {{ $json.body.orderCode }}",
+          "contentValue": "=STAND-IN RECIPIENT — swap this address for Regal's real contact email once known.  Please prepare the following order for fulfillment:  VSG order reference: {{ $json.body.orderCode }} Customer PO number: {{ $json.body.poNumber }}  Items: {{ $json.body.lines.map(l => `- ${l.quantity} x ${l.name} (SKU: ${l.sku})`).join('\\n') }}  Please confirm availability and expected ship date.  Thank you, Virtus Solutions Group",
+          "additionalFields": {}
+        },
+        "type": "n8n-nodes-base.sendGrid",
+        "typeVersion": 1,
+        "position": [
+          -96,
+          256
+        ],
+        "id": "ec49bdec-dcbe-426f-aa3f-36b262ba2b6a",
+        "name": "notify sender",
+        "credentials": {
+          "sendGridApi": {
+            "id": "E8S23LdirYRdTDgF",
+            "name": "SendGrid account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Order Placed Webhook": {
+        "main": [
+          [
+            {
+              "node": "notify sender",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "notify jacques",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "notify sender": {
+        "main": [
+          []
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "binaryMode": "separate",
+      "availableInMCP": false
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "nodeGroups": [],
+    "pinData": {},
+    "versionId": "b9a45341-2c77-4bfd-b353-8d37f75219cc",
+    "activeVersionId": "b9a45341-2c77-4bfd-b353-8d37f75219cc",
+    "versionCounter": 41,
+    "triggerCount": 1,
+    "sourceWorkflowId": null,
+    "tags": []
+  }
+]

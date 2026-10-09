@@ -14,11 +14,23 @@ import { DashboardPlugin } from '@vendure/dashboard/plugin';
 import { GraphiqlPlugin } from '@vendure/graphiql-plugin';
 import 'dotenv/config';
 import path from 'path';
+import { OrderNotificationPlugin } from './plugins/order-notification/order-notification.plugin';
 
 const IS_DEV = process.env.APP_ENV === 'dev';
 // PORT wins because hosting platforms inject it into the environment at runtime, and that
 // must take precedence over any value baked into the .env file at scaffold time.
 const serverPort = +process.env.PORT || +process.env.VENDURE_SERVER_PORT || 3000;
+
+// Augments Vendure's generated CustomOrderFields type so code elsewhere (e.g.
+// OrderNotificationPlugin) can read order.customFields.purchaseOrderNumber /
+// .customerNotes with type-checking, instead of casting to `any`. Must be
+// kept in sync with the `customFields.Order` array below.
+declare module '@vendure/core' {
+    interface CustomOrderFields {
+        purchaseOrderNumber?: string | null;
+        customerNotes?: string | null;
+    }
+}
 
 // VSG order numbers read as "VSG-XXXXXX" rather than Vendure's bare default code —
 // requested for branding when Jacques relays orders to the supplier.
@@ -119,5 +131,6 @@ export const config: VendureConfig = {
                 ? path.join(__dirname, '../dist/dashboard')
                 : path.join(__dirname, 'dashboard'),
         }),
+        OrderNotificationPlugin,
     ],
 };
